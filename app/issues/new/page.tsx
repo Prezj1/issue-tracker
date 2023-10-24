@@ -1,7 +1,8 @@
 "use client";
 
 import { Button, Callout, Text, TextField } from "@radix-ui/themes";
-import SimpleMDE from "react-simplemde-editor";
+// import SimpleMDE from "react-simplemde-editor";
+import dynamic from "next/dynamic";
 import "easymde/dist/easymde.min.css";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
@@ -39,6 +40,10 @@ const NewIssuePage = () => {
     }
   });
 
+  const SimpleMdeEditor = dynamic(() => import("react-simplemde-editor"), {
+    ssr: false,
+  });
+
   return (
     <div className="max-w-xl">
       {error && (
@@ -55,7 +60,7 @@ const NewIssuePage = () => {
           name="description"
           control={control}
           render={({ field }) => (
-            <SimpleMDE placeholder="Description" {...field} />
+            <SimpleMdeEditor placeholder="Description" {...field} />
           )}
         />
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
