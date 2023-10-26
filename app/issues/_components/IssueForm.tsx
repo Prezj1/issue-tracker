@@ -1,19 +1,19 @@
 "use client";
 
-import { Button, Callout, TextField } from "@radix-ui/themes";
-// import SimpleMDE from "react-simplemde-editor";
-import dynamic from "next/dynamic";
-import "easymde/dist/easymde.min.css";
-import { useForm, Controller } from "react-hook-form";
-import axios from "axios";
-import React, { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { issueSchema } from "@/app/validatrionSchema";
-import { z } from "zod";
 import ErrorMessage from "@/app/components/ErrorMessage";
 import Spinner from "@/app/components/Spinner";
+import { issueSchema } from "@/app/validatrionSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Issue } from "@prisma/client";
+import { CaretDownIcon } from "@radix-ui/react-icons";
+import { Button, Callout, DropdownMenu, TextField } from "@radix-ui/themes";
+import axios from "axios";
+import "easymde/dist/easymde.min.css";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import SimpleMDE from "react-simplemde-editor";
+import { z } from "zod";
 
 type IssueFormData = z.infer<typeof issueSchema>;
 
@@ -46,10 +46,6 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
     }
   });
 
-  const SimpleMdeEditor = dynamic(() => import("react-simplemde-editor"), {
-    ssr: false,
-  });
-
   return (
     <div className="max-w-xl">
       {error && (
@@ -71,10 +67,28 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
           defaultValue={issue?.description}
           control={control}
           render={({ field }) => (
-            <SimpleMdeEditor placeholder="Description" {...field} />
+            <SimpleMDE placeholder="Description" {...field} />
           )}
         />
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
+        <div>
+          {issue && (
+            <DropdownMenu.Root>
+              <DropdownMenu.Trigger>
+                <Button variant="soft" color="indigo">
+                  Options
+                  <CaretDownIcon width="12" height="12" />
+                </Button>
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Content variant="soft" color="indigo">
+                <DropdownMenu.Item shortcut="⌘ E">Edit</DropdownMenu.Item>
+                <DropdownMenu.Item shortcut="⌘ D">Duplicate</DropdownMenu.Item>
+                <DropdownMenu.Separator />
+                <DropdownMenu.Item shortcut="⌘ N">Archive</DropdownMenu.Item>
+              </DropdownMenu.Content>
+            </DropdownMenu.Root>
+          )}
+        </div>
         <Button disabled={isSubmitting}>
           {issue ? "Update Issue" : "Submit New Issue"}{" "}
           {isSubmitting && <Spinner />}
