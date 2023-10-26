@@ -4,7 +4,7 @@ import ErrorMessage from "@/app/components/ErrorMessage";
 import Spinner from "@/app/components/Spinner";
 import { issueSchema } from "@/app/validatrionSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Issue } from "@prisma/client";
+import { Issue, Status } from "@prisma/client";
 import { CaretDownIcon } from "@radix-ui/react-icons";
 import { Button, Callout, DropdownMenu, TextField } from "@radix-ui/themes";
 import axios from "axios";
@@ -29,6 +29,9 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
   });
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [currentStatus, setCurrentStatus] = useState("");
+
+  const issueStatuses = ["Open", "In Progress", "Closed"];
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -75,17 +78,27 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
         <div>
           {issue && (
             <DropdownMenu.Root>
-              <DropdownMenu.Trigger>
-                <Button variant="soft" color="indigo">
-                  Options
+              <DropdownMenu.Trigger {...register("status")}>
+                <Button variant="soft" color="indigo" value={currentStatus}>
+                  {currentStatus
+                    ? currentStatus
+                    : issue.status.toLocaleLowerCase()}
                   <CaretDownIcon width="12" height="12" />
                 </Button>
               </DropdownMenu.Trigger>
               <DropdownMenu.Content variant="soft" color="indigo">
-                <DropdownMenu.Item shortcut="⌘ E">Edit</DropdownMenu.Item>
-                <DropdownMenu.Item shortcut="⌘ D">Duplicate</DropdownMenu.Item>
-                <DropdownMenu.Separator />
-                <DropdownMenu.Item shortcut="⌘ N">Archive</DropdownMenu.Item>
+                {issueStatuses.map((status) => (
+                  <DropdownMenu.Item
+                    key={status}
+                    textValue={status}
+                    onClick={() => {
+                      setCurrentStatus(status);
+                      console.log(status);
+                    }}
+                  >
+                    {status}
+                  </DropdownMenu.Item>
+                ))}
               </DropdownMenu.Content>
             </DropdownMenu.Root>
           )}
