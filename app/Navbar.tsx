@@ -71,9 +71,7 @@ const AuthStatus = () => {
   if (status === "unauthenticated")
     return (
       <Link className="nav-link" href="/api/auth/signin">
-        <Button color="sky" className="hover:cursor">
-          Login
-        </Button>
+        Login
       </Link>
     );
 
