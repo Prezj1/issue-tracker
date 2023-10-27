@@ -93,7 +93,6 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
                     textValue={status}
                     onClick={() => {
                       setCurrentStatus(status);
-                      console.log(status);
                     }}
                   >
                     {status}
