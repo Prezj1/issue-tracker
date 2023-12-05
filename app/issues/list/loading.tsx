@@ -5,6 +5,8 @@ import IssueActions from "./IssueActions";
 const LoadingIssuesPage = () => {
   const issues = [1, 2, 3, 4, 5];
 
+  console.log("here we go");
+
   return (
     <div>
       <IssueActions />
